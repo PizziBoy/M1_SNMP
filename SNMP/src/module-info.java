@@ -6,4 +6,5 @@
  *
  */
 module SNMP {
+	requires java.rmi;
 }
