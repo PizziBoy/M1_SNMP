@@ -27,22 +27,23 @@ public class AgentImpl extends UnicastRemoteObject implements Agent{
 		return this.mib.get(key);
 	}
 
-
-
-
 	@Override
-	public HashMap get(ParametreGet parametreGet) throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+	public Message get(ParameterGet parameterGet) throws RemoteException {
+		String valeurRetour = this.getEntryFromMIB(parameterGet.getName());
+		String typeMessage = "GET_RESP";
+		return new Message(typeMessage, valeurRetour);
 	}
 
-
 	@Override
-	public Message set(ParametreSet parametreSet) throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+	public Message set(ParameterSet parameterSet) throws RemoteException {
+		String nom = parameterSet.getName();
+		String valeur = parameterSet.getValue();
+		String typeMessage = "SET_RESP";
+		String valeurRetour = "OK";
+		this.setEntryMIB(nom, valeur);
+		return new Message(typeMessage, valeurRetour);
 	}
-
+		
 
 
 
