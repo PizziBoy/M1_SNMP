@@ -13,7 +13,7 @@ public class AgentImpl extends UnicastRemoteObject implements Agent{
 	public AgentImpl() throws RemoteException {
 		super();
 		this.mib = new HashMap<String,String>();
-		this.mib.put("nom", "Agent_SNMP");
+		this.mib.put("name", "Agent_SNMP");
 		this.mib.put("addr", "localhost");
 	}
 	
@@ -29,19 +29,19 @@ public class AgentImpl extends UnicastRemoteObject implements Agent{
 
 	@Override
 	public Message get(ParameterGet parameterGet) throws RemoteException {
-		String valeurRetour = this.getEntryFromMIB(parameterGet.getName());
-		String typeMessage = "GET_RESP";
-		return new Message(typeMessage, valeurRetour);
+		String returnValue = this.getEntryFromMIB(parameterGet.getName());
+		String messageType = "GET_RESP";
+		return new Message(messageType, returnValue);
 	}
 
 	@Override
 	public Message set(ParameterSet parameterSet) throws RemoteException {
-		String nom = parameterSet.getName();
-		String valeur = parameterSet.getValue();
-		String typeMessage = "SET_RESP";
-		String valeurRetour = "OK";
-		this.setEntryMIB(nom, valeur);
-		return new Message(typeMessage, valeurRetour);
+		String name = parameterSet.getName();
+		String value = parameterSet.getValue();
+		String messageType = "SET_RESP";
+		String messageValue = "OK";
+		this.setEntryMIB(name, value);
+		return new Message(messageType, messageValue);
 	}
 		
 
