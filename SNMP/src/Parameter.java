@@ -1,4 +1,7 @@
-public class Parameter {
+import java.io.Serializable;
+
+public class Parameter implements Serializable{
+
 	private String name;
 	
 	public Parameter(String name) {

@@ -1,10 +1,11 @@
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 
-public class AgentImpl extends UnicastRemoteObject implements Agent{
+public class AgentImpl extends UnicastRemoteObject implements Agent {
 	
 	private HashMap<String,String> mib;
 	

@@ -37,7 +37,7 @@ public class Launcher_ManagerClient {
 					System.out.println("Please enter the key : ");
 					paramG.setName(scan.next());
 					System.out.println(paramG.getName());
-					System.out.println(agent.get(paramG).toString());
+					System.out.println(agent.get(paramG).getValue());
 					break;
 				case 2:
 					System.out.println("You choose SET!");

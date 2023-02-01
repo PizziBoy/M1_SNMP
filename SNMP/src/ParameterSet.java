@@ -1,4 +1,6 @@
-public class ParameterSet extends Parameter{
+import java.io.Serializable;
+
+public class ParameterSet extends Parameter implements Serializable {
 	
 	private String value;
 

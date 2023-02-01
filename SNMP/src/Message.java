@@ -1,4 +1,6 @@
-public class Message {
+import java.io.Serializable;
+
+public class Message implements Serializable {
 	private String type;
 	private String value;
 	
@@ -6,5 +8,15 @@ public class Message {
 		this.type = type;
 		this.value = value;
 	}
+
+	public String getType() {
+		return type;
+	}
+
+	public String getValue() {
+		return value;
+	}
+	
+	
 	
 }
