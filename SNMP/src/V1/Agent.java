@@ -17,18 +17,21 @@ public class Agent extends UnicastRemoteObject implements Agent_interface{
 		this.mib.put("addr", "localhost");
 	}
 
-
 	@Override
-	public HashMap get(ParametreGet parametreget) throws RemoteException {
-		return this.mib.get(parametreget);		
+	public Message get(ParametreGet parametreget) throws RemoteException {
+		String valeur_retour = this.mib.get(parametreget.getNom());
+		String type_message = "GET_RESP";
+		return new Message(type_message, valeur_retour);
 	}
 
 	@Override
 	public Message set(ParametreSet parametreset) throws RemoteException {
-		return this.mib.put(parametreset);
-		
+		String nom = parametreset.getNom();
+		String valeur = parametreset.getValeur();
+		String type_message = "SET_RESP";
+		String valeur_retour = "OK";
+		this.mib.put(nom, valeur);
+		return new Message(type_message, valeur_retour);
 	}
 
-
-	
 }
