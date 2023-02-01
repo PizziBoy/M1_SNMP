@@ -1,5 +1,3 @@
-package V1;
-
 public class Message {
 	private String type;
 	private String value;

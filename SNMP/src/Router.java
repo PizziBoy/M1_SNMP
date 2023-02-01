@@ -1,5 +1,3 @@
-package V1;
-
 public class Router extends Equipment {
 
 	public Router(String manufacturer, String reference, String nbInterfaces) {

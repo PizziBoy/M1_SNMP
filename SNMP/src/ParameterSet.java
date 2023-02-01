@@ -1,5 +1,3 @@
-package V1;
-
 public class ParameterSet extends Parameter{
 	
 	private String value;

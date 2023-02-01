@@ -1,5 +1,3 @@
-package V1;
-
 public class Parameter {
 	private String name;
 	

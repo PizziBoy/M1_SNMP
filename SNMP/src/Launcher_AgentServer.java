@@ -1,5 +1,3 @@
-package V1;
-
 import java.net.MalformedURLException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
