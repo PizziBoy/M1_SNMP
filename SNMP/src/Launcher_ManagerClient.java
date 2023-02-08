@@ -12,7 +12,9 @@ public class Launcher_ManagerClient {
 		Scanner scan = new Scanner(System.in);
 		boolean menuOn = true;
 		
-		Agent agent =  (Agent) Naming.lookup("rmi://localhost:20999/agent");
+		
+		Manager manager = new Manager();
+		manager.bindAgent((Agent) Naming.lookup("rmi://localhost:20999/agent"));
 		
 		while(menuOn) {
 			//Affichage du menu
@@ -33,20 +35,20 @@ public class Launcher_ManagerClient {
 					System.out.println("You choose to leave!");
 					break;
 				case 1: 
-					System.out.println("You choose GET!");
-					System.out.println("Please enter the key : ");
+					System.out.println("You choose GET!\n");
+					System.out.println("Please enter the key : \n");
 					paramG.setName(scan.next());
-					System.out.println(paramG.getName());
-					System.out.println(agent.get(paramG).getValue());
+					System.out.println(manager.getFromAgent(paramG).getValue());
 					break;
 				case 2:
-					System.out.println("You choose SET!");
-					System.out.println("Please enter the key : ");
+					System.out.println("You choose SET!\n");
+					System.out.println("Please enter the key : \n");
 					paramS.setName(scan.next());
 					scan.nextLine();
 					
-					System.out.println("Please enter the new value : ");
+					System.out.println("Please enter the new value : \n");
 					paramS.setValue(scan.next());
+					System.out.println(manager.setOnAgent(paramS).getValue());
 					break;
 				}
 				
