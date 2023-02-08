@@ -7,15 +7,11 @@ import java.util.HashMap;
 
 public class AgentImpl extends UnicastRemoteObject implements Agent {
 	
-	private HashMap<String,String> mib;
+	private HashMap<String, TrioIndexValeurDroit> mib;
 	
-	public AgentImpl() throws RemoteException {
-		super();
-		this.mib = new HashMap<String,String>();
-		this.mib.put("name", "Agent_SNMP");
-		this.mib.put("addr", "localhost");
+	public AgentImpl(String key, TrioIndexValeurDroit trioIndexValeurDroit) throws RemoteException {
+		this.mib = new HashMap<key,trioIndexValeurDroit>();
 	}
-	
 	
 	protected void setEntryMIB(String key, String value) {
 		//If entry exists => PUT WILL UPDATE VALUE
@@ -42,6 +38,8 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 		String messageValue = "OK";
 		return new Message(messageType, messageValue);
 	}
+	
+	
 		
 
 
