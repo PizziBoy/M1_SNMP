@@ -37,9 +37,9 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 	public Message set(ParameterSet parameterSet) throws RemoteException {
 		String name = parameterSet.getName();
 		String value = parameterSet.getValue();
+		this.setEntryMIB(name, value);
 		String messageType = "SET_RESP";
 		String messageValue = "OK";
-		this.setEntryMIB(name, value);
 		return new Message(messageType, messageValue);
 	}
 		

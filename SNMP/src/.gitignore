@@ -1,1 +1,13 @@
 /module-info.class
+/Agent.class
+/AgentImpl.class
+/Equipment.class
+/Launcher_AgentServer.class
+/Launcher_ManagerClient.class
+/Main.class
+/Manager.class
+/Message.class
+/Parameter.class
+/ParameterGet.class
+/ParameterSet.class
+/Router.class
