@@ -13,8 +13,6 @@ public class Launcher_AgentServer {
 		TrioIndexValeurDroit trio_name = new TrioIndexValeurDroit(2, "Agent_test", Droit.RO);
 		String key_name = "name";
 
-		
-
 		AgentImpl agent = new AgentImpl();
 		//Create the registry
 		LocateRegistry.createRegistry(PORT);

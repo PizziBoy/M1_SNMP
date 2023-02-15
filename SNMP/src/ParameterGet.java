@@ -18,3 +18,11 @@ public class ParameterGet extends Parameter implements Serializable {
 	}
 
 }
+
+
+os
+
+os.1
+
+
+get newt os.1

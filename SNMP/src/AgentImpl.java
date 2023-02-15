@@ -7,10 +7,10 @@ import java.util.HashMap;
 
 public class AgentImpl extends UnicastRemoteObject implements Agent {
 	
-	private HashMap<String, TrioIndexValeurDroit> mib;
+	private MIB mib;
 	
 	public AgentImpl(String key, TrioIndexValeurDroit trioIndexValeurDroit) throws RemoteException {
-		this.mib = new HashMap<key,trioIndexValeurDroit>();
+		this.mib = new MIB();
 	}
 	
 	protected void setEntryMIB(String key, String value) {
