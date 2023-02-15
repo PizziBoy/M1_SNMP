@@ -13,16 +13,8 @@ public class ParameterGet extends Parameter implements Serializable {
 	 * ParameterGet Constructor
 	 * @param <String> name
 	 */
-	public ParameterGet(String name) {
-		super(name);
+	public ParameterGet(String name, String community) {
+		super(name, community);
 	}
 
 }
-
-
-os
-
-os.1
-
-
-get newt os.1

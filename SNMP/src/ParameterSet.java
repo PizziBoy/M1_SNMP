@@ -14,8 +14,8 @@ public class ParameterSet extends Parameter implements Serializable {
 	 * @param <String> name
 	 * @param <String> value
 	 */
-	public ParameterSet(String name,String value) {
-		super(name);
+	public ParameterSet(String name,String value, String community) {
+		super(name, community);
 		this.value = value;
 	}
 	
