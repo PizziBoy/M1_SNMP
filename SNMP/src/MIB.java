@@ -22,10 +22,10 @@ public class MIB {
 	 * initialize the MIB structure
 	 */
 	public void initializeStructureMib () {
-		String[] objectMib = {"os","addrIp","addrMac","statusWifi"};
+		String[] objectMib = {"os","addrIp","addrMac","statusInterface"};
 		Droit[] droitForObjectMib = {Droit.RO,Droit.RW,Droit.RO,Droit.RO};
 		
-		for (int i = 1; i < droitForObjectMib.length; i++) {
+		for (int i = 0; i < droitForObjectMib.length; i++) {
 			this.mib.put(objectMib[i], new TrioIndexValeurDroit(i, null, droitForObjectMib[i]));
 		}	
 	}
@@ -68,8 +68,6 @@ public class MIB {
 	public Droit getDroit(String key) {
 		TrioIndexValeurDroit trioIndexValeurDroit = this.mib.get(key);
 		return trioIndexValeurDroit.getDroit();
-	}
-	
-	
+	}	
 	
 }
