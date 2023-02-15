@@ -61,6 +61,23 @@ public class MIB {
 	}
 	
 	/**
+	 * Method to get value from index
+	 * @param index is the mib index of value
+	 * @return the MIB value with the key
+	 */
+	public String getValue(int index) {
+		for (Map.Entry<String, TrioIndexValeurDroit> entry : this.mib.entrySet()) {
+			String key = entry.getKey();
+			TrioIndexValeurDroit value = entry.getValue();
+			
+			if (value.getIndex() == index) {
+				return value.getValeur();
+			}
+		}
+		return null;	
+	}
+	
+	/**
 	 * Method to get permission with the key
 	 * @param key is the MIB object name
 	 * @return the MIB permission with the key
