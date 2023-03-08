@@ -123,6 +123,9 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 		else if (this.getCommunityPermissions(parameterSet.getCommunity()) != Droit.RW){
 			return new Message("NO_RESP", "---");
 		} else {
+			if (this.mib.getDroit(parameterSet.getName()) != Droit.RW) {
+				return new Message("NO_RESP", "---");
+			}
 			String name = parameterSet.getName();
 			String value = parameterSet.getValue();
 			this.mib.setValueMib(name, value);
