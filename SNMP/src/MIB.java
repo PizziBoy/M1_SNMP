@@ -37,7 +37,10 @@ public class MIB {
 	 */
 	public void setValueMib(String key,String value) {
 		TrioIndexValeurDroit trioIndexValeurDroit = this.mib.get(key);
-		trioIndexValeurDroit.setValeur(value);
+		if (trioIndexValeurDroit != null) {
+			trioIndexValeurDroit.setValeur(value);
+		}
+		
 	}
 	
 	/**
@@ -47,6 +50,9 @@ public class MIB {
 	 */
 	public int getIndex(String key) {
 		TrioIndexValeurDroit trioIndexValeurDroit = this.mib.get(key);
+		if (trioIndexValeurDroit == null) {
+			return -1;
+		}
 		return trioIndexValeurDroit.getIndex();
 	}
 	
@@ -57,17 +63,35 @@ public class MIB {
 	 */
 	public String getValue(String key) {
 		TrioIndexValeurDroit trioIndexValeurDroit = this.mib.get(key);
+		if (trioIndexValeurDroit == null) {
+			return null;
+		}
 		return trioIndexValeurDroit.getValeur();
+	}
+	
+	/**
+	 * Method to key from index
+	 * @param index is the mib index of value
+	 * @return the MIB key with the key
+	 */
+	public String getKey(int index) {
+		for (Map.Entry<String, TrioIndexValeurDroit> entry : this.mib.entrySet()) {
+			TrioIndexValeurDroit value = entry.getValue();
+			
+			if (value.getIndex() == index) {
+				return entry.getKey();
+			}
+		}
+		return null;	
 	}
 	
 	/**
 	 * Method to get value from index
 	 * @param index is the mib index of value
-	 * @return the MIB value with the key
+	 * @return the MIB value 
 	 */
 	public String getValue(int index) {
 		for (Map.Entry<String, TrioIndexValeurDroit> entry : this.mib.entrySet()) {
-			String key = entry.getKey();
 			TrioIndexValeurDroit value = entry.getValue();
 			
 			if (value.getIndex() == index) {

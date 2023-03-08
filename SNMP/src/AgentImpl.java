@@ -57,30 +57,51 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 	 */
 	@Override
 	public Message getNext(ParameterGet parameterGet) throws RemoteException {
+		String returnValue = "---";
+		String messageType = "NO_RESP";
 		/**
 		 * If no community match so return NO_RESP 
 		 */
 		if (!this.isCommunityExists(parameterGet.getCommunity())) {
-			return new Message("NO_RESP", "---");
+			return new Message(messageType, returnValue);
 		}
 		
 		String name = parameterGet.getName();
-		if (name.contains(".")) {
-			String[] requestSplitted = name.split(".");
-			int index = Integer.parseInt(requestSplitted[1]);
+		/**
+		 * Only .1 is allowed due to our MIB conception
+		 */
+		if (name.endsWith(".1")) {
+			String[] requestSplitted = name.split("\\.");
 			name = requestSplitted[0];
+			int index = this.mib.getIndex(name);
+			if (index == -1) {
+				return new Message(messageType, returnValue);
+			}
 			/**
 			 * get NEXT so index + 1
 			 */
-			String returnValue = this.mib.getValue(index + 1);
-			String messageType = "GET_RESP";
-			return new Message(messageType, returnValue);
-		} else {
+			String key = this.mib.getKey(index + 1);
+			String value = this.mib.getValue(index + 1);
+			if (key != null && value != null) {
+				returnValue = this.mib.getKey(index + 1) + ".1 = " + this.mib.getValue(index + 1);
+				messageType = "GETNEXT_RESP";
+			}
 			
-		}
-		String[] nameSplitted = name.split(".");
-		String returnValue = this.mib.getValue(parameterGet.getName());
-		String messageType = "GET_RESP";
+		/**
+		 * If name contains only letters
+		 */
+		} else if(name.matches("[a-zA-Z]+")) {
+			/**
+			 * get standard value if not .[0-9] so find index of value provided 
+			 */
+			int index = this.mib.getIndex(parameterGet.getName());
+			if (index == -1) {
+				return new Message(messageType, returnValue);
+			}
+			returnValue = this.mib.getKey(index) + ".1 = " + this.mib.getValue(index);
+			messageType = "GETNEXT_RESP";	
+		} 
+		
 		return new Message(messageType, returnValue);
 	}
 

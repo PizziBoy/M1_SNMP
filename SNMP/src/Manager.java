@@ -31,6 +31,14 @@ public class Manager {
 	}
 	
 	/**
+	 * Get next variable value by requesting managed agent with parameter @param pGet
+	 * @throws RemoteException
+	 */
+	public Message getNextFromAgent(ParameterGet pGet) throws RemoteException {
+		return this.agent.getNext(pGet);
+	}
+	
+	/**
 	 * Set variable value by requesting managed agent with parameter @param pSet
 	 * @throws RemoteException
 	 */
