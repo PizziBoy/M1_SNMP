@@ -27,7 +27,6 @@ public class Launcher_AgentServer {
 		Naming.bind("rmi://localhost:" + PORT.toString() +"/agent", agent);
 		
 		System.out.println("Agent running ...");
-		System.out.println(agent.getNext(new ParameterGet("caca.1", "stri")).getValue());
 	}
 
 }
