@@ -10,6 +10,11 @@ import java.util.Scanner;
 public class Launcher_ManagerClient {
 	private final static Integer PORT = 20999;
 	public static void main(String [] args) throws MalformedURLException, RemoteException, NotBoundException, AlreadyBoundException {
+		
+		Trap trap = new Trap();
+		Thread trapThread = new Thread(trap);
+		trapThread.start();
+		
 		Scanner scan = new Scanner(System.in);
 		boolean menuOn = true;
 		
@@ -18,7 +23,6 @@ public class Launcher_ManagerClient {
 		//Manager instanciation
 		Manager manager = new Manager();
 		//Publish registry
-		Naming.bind("rmi://localhost:" + PORT.toString() +"/manager", manager);
 		manager.bindAgent((Agent) Naming.lookup("rmi://localhost:20999/agent"));
 		
 		
