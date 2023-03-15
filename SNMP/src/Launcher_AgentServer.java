@@ -19,6 +19,8 @@ public class Launcher_AgentServer {
 		
 		//Agent instanciation
 		AgentImpl agent = new AgentImpl(configCommunity);
+		 
+		
 		
 		//Create the registry
 		LocateRegistry.createRegistry(PORT);
