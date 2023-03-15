@@ -251,6 +251,10 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 		}
 	}
 	
+	/**
+	 * Writte MIB in file
+	 * @param serObj is the object to serialize (Here is the MIB)
+	 */
 	 public void WriteObjectToFile(Object serObj) {
 	        try {
 	            FileOutputStream fileOut = new FileOutputStream(filepath);
@@ -262,5 +266,4 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 	            ex.printStackTrace();
 	        }
 	    }
-	
 }
