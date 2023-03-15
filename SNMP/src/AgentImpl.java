@@ -257,7 +257,7 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 	            ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
 	            objectOut.writeObject(serObj);
 	            objectOut.close();
-	            System.out.println("The Object  was succesfully written to a file");
+	            System.out.println("The MIB was succesfully written to a file");
 	        } catch (Exception ex) {
 	            ex.printStackTrace();
 	        }
