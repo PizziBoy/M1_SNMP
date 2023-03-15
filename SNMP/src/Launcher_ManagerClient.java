@@ -16,7 +16,7 @@ public class Launcher_ManagerClient {
 		String community = "public";
 
 		//Manager instanciation
-		ManagerImpl manager = new ManagerImpl();
+		Manager manager = new Manager();
 		//Publish registry
 		Naming.bind("rmi://localhost:" + PORT.toString() +"/manager", manager);
 		manager.bindAgent((Agent) Naming.lookup("rmi://localhost:20999/agent"));
