@@ -1,5 +1,6 @@
+import java.io.Serializable;
 
-public class TrioIndexValeurDroit {
+public class TrioIndexValeurDroit implements Serializable{
 	private int index;
 	private String valeur;
 	private Droit droit;

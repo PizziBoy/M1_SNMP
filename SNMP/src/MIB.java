@@ -1,13 +1,15 @@
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * 
  * Class MIB
  *
  */
-public class MIB {
+public class MIB implements Serializable{
 	private HashMap<String,TrioIndexValeurDroit> mib;
 	
 	/**
@@ -40,7 +42,6 @@ public class MIB {
 		if (trioIndexValeurDroit != null) {
 			trioIndexValeurDroit.setValeur(value);
 		}
-		
 	}
 	
 	/**
