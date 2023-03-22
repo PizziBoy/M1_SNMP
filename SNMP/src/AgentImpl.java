@@ -7,7 +7,9 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -21,6 +23,8 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 	private MIB mib;
 	private HashMap<String, Droit> communityConfig;
 	
+	private TrapManagement trapManagement;
+	
 	/**
 	 * 
 	 * @param communityConfig is the hashMap containing <community, Permissions>
@@ -30,10 +34,19 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 	 * @throws SocketException 
 	 */
 	public AgentImpl(HashMap<String, Droit> communityConfig) throws RemoteException, SocketException, UnknownHostException {
+		this.trapManagement = new TrapManagement();
 		this.mib = new MIB();
 		this.communityConfig = communityConfig;
 		this.putMibValue();
 		this.WriteObjectToFile(this.mib);
+	}
+	
+	public void subscribe() {
+		String[] defaultSubscribe = {"os", "addrIp", "addrMac"};
+		
+		for (String s : defaultSubscribe) {
+			this.trapManagement.setValue(s);
+		}
 	}
 	
 
@@ -132,9 +145,16 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 			}
 			String name = parameterSet.getName();
 			String value = parameterSet.getValue();
+			String oldValue = this.mib.getValue(parameterSet.getName());
 			this.mib.setValueMib(name, value);
 			String messageType = "SET_RESP";
 			String messageValue = "OK";
+			
+			/**
+			 * Trap notifier
+			 */
+			this.trapManagement.change(name, oldValue, value);
+			System.out.println("mib ajout OK");
 			return new Message(messageType, messageValue);
 		}
 		

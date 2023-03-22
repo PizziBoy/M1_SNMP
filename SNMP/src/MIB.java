@@ -9,11 +9,12 @@ import java.util.TreeMap;
  * Class MIB
  *
  */
-public class MIB implements Serializable{
+public class MIB implements Serializable {
 	private HashMap<String,TrioIndexValeurDroit> mib;
 	
 	/**
 	 * Create and initialize the MIB
+	 * @param trapManagement 
 	 */
 	public MIB() {
 		this.mib = new HashMap<String,TrioIndexValeurDroit>();

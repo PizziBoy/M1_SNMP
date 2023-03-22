@@ -19,6 +19,7 @@ public class Launcher_AgentServer {
 		
 		//Agent instanciation
 		AgentImpl agent = new AgentImpl(configCommunity);
+		agent.subscribe();
 		 
 		
 		
