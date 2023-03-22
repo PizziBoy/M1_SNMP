@@ -1,3 +1,5 @@
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -15,6 +17,7 @@ import java.util.HashMap;
  */
 public class AgentImpl extends UnicastRemoteObject implements Agent {
 	
+	private static final String filepath="../MIB";
 	private MIB mib;
 	private HashMap<String, Droit> communityConfig;
 	
@@ -30,6 +33,7 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 		this.mib = new MIB();
 		this.communityConfig = communityConfig;
 		this.putMibValue();
+		this.WriteObjectToFile(this.mib);
 	}
 	
 
@@ -245,6 +249,21 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 	    for (int i = 0; i < objectMib.length; i++) {
 			mib.setValueMib(objectMib[i], MibValue[i]);
 		}
-	}	
+	}
 	
+	/**
+	 * Writte MIB in file
+	 * @param serObj is the object to serialize (Here is the MIB)
+	 */
+	 public void WriteObjectToFile(Object serObj) {
+	        try {
+	            FileOutputStream fileOut = new FileOutputStream(filepath);
+	            ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
+	            objectOut.writeObject(serObj);
+	            objectOut.close();
+	            System.out.println("The MIB was succesfully written to a file");
+	        } catch (Exception ex) {
+	            ex.printStackTrace();
+	        }
+	    }
 }

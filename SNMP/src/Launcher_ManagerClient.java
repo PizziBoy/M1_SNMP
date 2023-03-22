@@ -1,5 +1,6 @@
 
 import java.net.MalformedURLException;
+import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -7,14 +8,23 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Launcher_ManagerClient {
-
-	public static void main(String [] args) throws MalformedURLException, RemoteException, NotBoundException {
+	private final static Integer PORT = 20999;
+	public static void main(String [] args) throws MalformedURLException, RemoteException, NotBoundException, AlreadyBoundException {
+		
+		Trap trap = new Trap();
+		Thread trapThread = new Thread(trap);
+		trapThread.start();
+		
 		Scanner scan = new Scanner(System.in);
 		boolean menuOn = true;
 		
 		String community = "public";
+
+		//Manager instanciation
 		Manager manager = new Manager();
+		//Publish registry
 		manager.bindAgent((Agent) Naming.lookup("rmi://localhost:20999/agent"));
+		
 		
 		System.out.println("Do you have a community");
 		System.out.println("1 - YES");

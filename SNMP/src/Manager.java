@@ -1,18 +1,20 @@
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 
 /**
  * 
  * This class allow user to instanciate manager object
  *
  */
-public class Manager {
+public class Manager{
 
 	private Agent agent;
 	
 	/**
 	 * Manager constructor
+	 * @throws RemoteException
 	 */
-	public Manager() {
+	public Manager() throws RemoteException {
 		super();
 	}
 	
@@ -45,6 +47,8 @@ public class Manager {
 	public Message setOnAgent(ParameterSet pSet) throws RemoteException {
 		return this.agent.set(pSet);
 	}
+	
+	
 	
 	
 }
