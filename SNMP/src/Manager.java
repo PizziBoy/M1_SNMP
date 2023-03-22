@@ -47,8 +47,4 @@ public class Manager{
 	public Message setOnAgent(ParameterSet pSet) throws RemoteException {
 		return this.agent.set(pSet);
 	}
-	
-	
-	
-	
 }
