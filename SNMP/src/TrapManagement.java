@@ -25,6 +25,12 @@ public class TrapManagement implements Serializable {
 		}
 	}
 	
+	public void notifyBadCommunity(String community) {
+		LocalDateTime datetime = LocalDateTime.now();
+		String result = "[" + datetime + "] Bad community : " + community;
+		TrapSender.send(result);
+	}
+	
 	
 	
 }
