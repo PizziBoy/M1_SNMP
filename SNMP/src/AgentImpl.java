@@ -60,6 +60,10 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 		 * If no community match so return NO_RESP 
 		 */
 		if (!this.isCommunityExists(parameterGet.getCommunity())) {
+			/**
+			 * Trap notifier => bad community notifier to manager
+			 */
+			this.trapManagement.notifyBadCommunity(parameterGet.getCommunity());
 			return new Message("NO_RESP", "---");
 		}
 		
@@ -80,6 +84,10 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 		 * If no community match so return NO_RESP 
 		 */
 		if (!this.isCommunityExists(parameterGet.getCommunity())) {
+			/**
+			 * Trap notifier => bad community notifier to manager
+			 */
+			this.trapManagement.notifyBadCommunity(parameterGet.getCommunity());
 			return new Message(messageType, returnValue);
 		}
 		
@@ -132,7 +140,13 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 		 * If no community match so return NO_RESP 
 		 */
 		if (!this.isCommunityExists(parameterSet.getCommunity())) {
+			/**
+			 * Trap notifier => bad community notifier to manager
+			 */
+			this.trapManagement.notifyBadCommunity(parameterSet.getCommunity());
 			return new Message("NO_RESP", "---");
+			
+
 		} 
 		/**
 		 * Community found, checking permissions for set
