@@ -48,7 +48,9 @@ public class Manager{
 		return this.agent.set(pSet);
 	}
 	
-	
+	public Message subscribeAgent(ParameterSubscribe parameterSubscribe){
+			this.agent.subscribe(parameterSubscribe);
+	}
 	
 	
 }
