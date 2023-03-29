@@ -26,6 +26,9 @@ public class Launcher_ManagerClient {
 		//Publish registry
 		manager.bindAgent((Agent) Naming.lookup("rmi://localhost:20999/agent"));
 		
+		System.out.println("What is your manager name?");
+		String managerName = scan.nextLine();
+
 		System.out.println("Do you want to be a manager to manager or agent to manager?");
 		System.out.println("1 - Manager to Manager");
 		System.out.println("2 - Agent to Manager");
@@ -45,7 +48,7 @@ public class Launcher_ManagerClient {
 		for (String variable : vTab) {
 			subscribeVariable.add(variable);
 		}
-		ParameterSubscribe parameterSubscribe = new parameterSubscribe(ipAddress,port,subscribeVariable);
+		ParameterSubscribe parameterSubscribe = new parameterSubscribe(ipAddress,port,subscribeVariable,managerName);
 		switch(typeOfTrapSub) {
 			case 1:
 				manager.subscribeAgent(parameterSubscribe);
