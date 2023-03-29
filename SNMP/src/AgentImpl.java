@@ -37,7 +37,7 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 	 * @throws SocketException 
 	 */
 	public AgentImpl(HashMap<String, Droit> communityConfig) throws RemoteException, SocketException, UnknownHostException {
-		this.trapManagement = new TrapManagement();
+		this.trapManagement = new TrapManagement(this);
 		this.mib = new MIB();
 		this.communityConfig = communityConfig;
 		this.putMibValue();
@@ -322,4 +322,8 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 	            ex.printStackTrace();
 	        }
 	    }
+
+	public void sendTrap(String trap) {
+		this.manager.receiveTrap(trap);
+	}
 }
