@@ -2,9 +2,12 @@ import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -22,7 +25,7 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 	private static final String filepath="../MIB";
 	private MIB mib;
 	private HashMap<String, Droit> communityConfig;
-	
+	private Manager manager;
 	private TrapManagement trapManagement;
 	
 	/**
@@ -41,12 +44,31 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 		this.WriteObjectToFile(this.mib);
 	}
 	
-	public void subscribe() {
-		String[] defaultSubscribe = {"os", "addrIp", "addrMac"};
+	public Message subscribe(ParameterSubscribe parameterSuscribe) {
+		String addrIp = parameterSuscribe.getAddrIp();
+		int port = parameterSuscribe.getNumPort();
+		String managerName = parameterSuscribe.getManagerName();
+		ArrayList<String> monitoredVariables = parameterSuscribe.getMonitoredVariables();
 		
-		for (String s : defaultSubscribe) {
+		String url = "rmi://"+addrIp+":"+port+"/"+managerName;
+		
+		try {
+			this.manager = ((Manager) Naming.lookup(url));
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NotBoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		for (String s : monitoredVariables) {
 			this.trapManagement.setValue(s);
 		}
+		return new Message("SUSCRIBE_OK","");
 	}
 	
 
