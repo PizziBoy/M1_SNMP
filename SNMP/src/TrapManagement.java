@@ -4,19 +4,25 @@ import java.util.ArrayList;
 
 public class TrapManagement implements Serializable {
 
-	private ArrayList<String> subscribeVariable;
+	private ArrayList<String> monitoredVariables;
+	
+	private AgentImpl agent;
+	
 
-	public TrapManagement() {
-		this.subscribeVariable = new ArrayList<String>();
+	public TrapManagement(AgentImpl agent) {
+		/**
+		 * Added agent to attribute in order to call rmi method sendTrap()
+		 */
+		this.agent = agent;
 	}
 	
 	public void setValue(String value) {
-		this.subscribeVariable.add(value);
+		this.monitoredVariables.add(value);
 	}
 	
+	//Observer 
 	public void change(String key, String oldValue, String newValue) {
-		System.out.println(subscribeVariable.toString());
-		for (String s : this.subscribeVariable) {
+		for (String s : this.monitoredVariables) {
 			if (s.equals(key)) {
 				LocalDateTime datetime = LocalDateTime.now();
 				String result = "[" + datetime + "] " + "MIB Object : " + key + " | Old value : " + oldValue + " | New value : " + newValue;
