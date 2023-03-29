@@ -44,6 +44,4 @@ public class Trap implements Runnable{
 		str = str +  "########################################## TRAP RECEIVER END ###########################################\n";
 		return str;
 	}
-	
-
 }
