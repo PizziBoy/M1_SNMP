@@ -11,3 +11,9 @@
 /ParameterGet.class
 /ParameterSet.class
 /Router.class
+/Entity.class
+/SNMPEntity.class
+/Tests.class
+/TestAgent.class
+/SNMPEntityImpl.class
+/TestManager.class

@@ -13,7 +13,7 @@ import java.util.HashMap;
  * Class AgentImpl
  *
  */
-public class AgentImpl extends UnicastRemoteObject implements Agent {
+public class AgentImpl extends SNMPEntityImpl implements Agent {
 	
 	private MIB mib;
 	private HashMap<String, Droit> communityConfig;
@@ -21,12 +21,11 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 	/**
 	 * 
 	 * @param communityConfig is the hashMap containing <community, Permissions>
-	 * @throws RemoteException
-	 * Create a new MIB object 
-	 * @throws UnknownHostException 
-	 * @throws SocketException 
+	 * @throws Exception 
 	 */
-	public AgentImpl(HashMap<String, Droit> communityConfig) throws RemoteException, SocketException, UnknownHostException {
+	public AgentImpl(String name, String registryAddr, int registryPort, HashMap<String, Droit> communityConfig) throws Exception {
+		//Call SNMPEntity to register registry and name 
+		super(name, registryAddr, registryPort);
 		this.mib = new MIB();
 		this.communityConfig = communityConfig;
 		this.putMibValue();

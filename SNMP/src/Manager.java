@@ -1,26 +1,39 @@
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.HashMap;
 
 /**
  * 
  * This class allow user to instanciate manager object
  *
  */
-public class Manager {
+public class Manager extends SNMPEntityImpl{
 
+	//Only one Agent ON => Pointing on 1 SNMPEntity
 	private Agent agent;
 	
 	/**
 	 * Manager constructor
 	 */
-	public Manager() {
-		super();
+	public Manager(String name, String registryAddr, int registryPort) throws Exception {
+		//Call SNMPEntity to register registry and name 
+		super(name, registryAddr, registryPort);
 	}
 	
 	/**
 	 * Method for allow Manager to manage @param agent 
+	 * @throws Exception 
 	 */
-	public void bindAgent(Agent agent) {
-		this.agent = agent;
+	//Agent must be present in registry before setting it !
+	public void setCurrentAgent(String agentName) throws Exception {
+		try {
+			this.agent = (Agent) Naming.lookup("rmi://" + this.registryAddr + ":" + this.registryPort + "/" + agentName);
+			System.out.println("" + agentName + " successfuly linked to " + this.entityName);
+		} catch (MalformedURLException | RemoteException | NotBoundException e) {
+			throw new Exception("Error while lookup Agent entity please check Registry or name of entity");
+		}
 	}
 	/**
 	 * Get variable value by requesting managed agent with parameter @param pGet
