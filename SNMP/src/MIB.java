@@ -1,23 +1,24 @@
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * 
  * Class MIB
  *
  */
-public class MIB implements Serializable {
-	private HashMap<String,TrioIndexValeurDroit> mib;
+public class MIB {
+	private ArrayList<MibRecord> mib;
 	
 	/**
 	 * Create and initialize the MIB
-	 * @param trapManagement 
 	 */
 	public MIB() {
-		this.mib = new HashMap<String,TrioIndexValeurDroit>();
+		this.mib = new ArrayList<MibRecord>();
 		this.initializeStructureMib();
 	}
 	
@@ -25,12 +26,15 @@ public class MIB implements Serializable {
 	 * initialize the MIB structure
 	 */
 	public void initializeStructureMib () {
-		String[] objectMib = {"os","addrIp","addrMac","statusInterface"};
-		Droit[] droitForObjectMib = {Droit.RO,Droit.RW,Droit.RO,Droit.RO};
+		String[] key = {"os","addrIp","addrMac","statusInterface"};
+		String[] value = {"DEF","DEF","DEF","DEF"};
+		Droit[] permissions = {Droit.RW,Droit.RW,Droit.RO,Droit.RO};
 		
-		for (int i = 0; i < droitForObjectMib.length; i++) {
-			this.mib.put(objectMib[i], new TrioIndexValeurDroit(i, null, droitForObjectMib[i]));
+		for (int i = 0; i < key.length; i++) {
+			MibRecord tmp = new MibRecord(key[i], value[i], permissions[i]);
+			this.mib.add(tmp);
 		}	
+		System.out.println("Mib structure OK");
 	}
 	
 	/**
@@ -39,10 +43,12 @@ public class MIB implements Serializable {
 	 * @param value is the MIB value
 	 */
 	public void setValueMib(String key,String value) {
-		TrioIndexValeurDroit trioIndexValeurDroit = this.mib.get(key);
-		if (trioIndexValeurDroit != null) {
-			trioIndexValeurDroit.setValeur(value);
-		}
+		MibRecord mibRecord = this.getMibRecord(key);
+		if ( mibRecord != null) {
+			mibRecord.setValue(value);
+		} 
+		
+		
 	}
 	
 	/**
@@ -51,66 +57,39 @@ public class MIB implements Serializable {
 	 * @return the MIB index with the key
 	 */
 	public int getIndex(String key) {
-		TrioIndexValeurDroit trioIndexValeurDroit = this.mib.get(key);
-		if (trioIndexValeurDroit == null) {
+		MibRecord mibRecord = this.getMibRecord(key);
+		if (mibRecord == null) {
 			return -1;
 		}
-		return trioIndexValeurDroit.getIndex();
+		return this.mib.indexOf(mibRecord);
 	}
 	
-	/**
-	 * Method to get value with the key
-	 * @param key is the MIB object name
-	 * @return the MIB value with the key
-	 */
-	public String getValue(String key) {
-		TrioIndexValeurDroit trioIndexValeurDroit = this.mib.get(key);
-		if (trioIndexValeurDroit == null) {
-			return null;
-		}
-		return trioIndexValeurDroit.getValeur();
-	}
+
+
 	
-	/**
-	 * Method to key from index
-	 * @param index is the mib index of value
-	 * @return the MIB key with the key
-	 */
-	public String getKey(int index) {
-		for (Map.Entry<String, TrioIndexValeurDroit> entry : this.mib.entrySet()) {
-			TrioIndexValeurDroit value = entry.getValue();
-			
-			if (value.getIndex() == index) {
-				return entry.getKey();
+	public MibRecord getMibRecord(String key) {
+		for (MibRecord mibRecord : this.mib) {
+			if (mibRecord.getKey().equals(key)) {
+				return mibRecord;
+
 			}
 		}
-		return null;	
+		return null;
 	}
 	
-	/**
-	 * Method to get value from index
-	 * @param index is the mib index of value
-	 * @return the MIB value 
-	 */
-	public String getValue(int index) {
-		for (Map.Entry<String, TrioIndexValeurDroit> entry : this.mib.entrySet()) {
-			TrioIndexValeurDroit value = entry.getValue();
-			
-			if (value.getIndex() == index) {
-				return value.getValeur();
+	public MibRecord getMibNextRecord(MibRecord mibRecord) {
+		for (int i = 0; i < this.mib.size(); i++) {
+			if (this.mib.get(i).getKey() == mibRecord.getKey()) {
+				return this.mib.get(i + 1);
 			}
 		}
-		return null;	
+		return null;
 	}
+
 	
-	/**
-	 * Method to get permission with the key
-	 * @param key is the MIB object name
-	 * @return the MIB permission with the key
-	 */
-	public Droit getDroit(String key) {
-		TrioIndexValeurDroit trioIndexValeurDroit = this.mib.get(key);
-		return trioIndexValeurDroit.getDroit();
-	}	
+	
+	
 	
 }
+	
+

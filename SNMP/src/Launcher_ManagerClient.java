@@ -1,63 +1,18 @@
 
-import java.net.MalformedURLException;
-import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Launcher_ManagerClient {
-	private final static Integer PORT = 20999;
-	public static void main(String [] args) throws MalformedURLException, RemoteException, NotBoundException, AlreadyBoundException {
-		
-		Trap trap = new Trap();
-		Thread trapThread = new Thread(trap);
-		trapThread.start();
-		
+
+	public static void main(String [] args) throws Exception {
 		Scanner scan = new Scanner(System.in);
 		boolean menuOn = true;
 		
 		String community = "public";
-
-		//Manager instanciation
-		Manager manager = new Manager();
-		//Publish registry
-		manager.bindAgent((Agent) Naming.lookup("rmi://localhost:20999/agent"));
+		Manager manager = new Manager("Manager1", "localhost", 20999);
+		manager.setAgent((Agent) Naming.lookup("rmi://localhost:20999/agent"));
 		
-		System.out.println("What is your manager name?");
-		String managerName = scan.nextLine();
-
-		System.out.println("Do you want to be a manager to manager or agent to manager?");
-		System.out.println("1 - Manager to Manager");
-		System.out.println("2 - Agent to Manager");
-		int typeOfTrapSub = scan.nextInt();
-
-		System.out.println("What is the IP address of the server?");
-		String ipAddress = scan.nextLine();
-
-		System.out.println("What is the port you want to use?");
-		int port = scan.nextInt();
-
-		ArrayList<String> subscribeVariable = new ArrayList<>();
-		System.out.println("Which variable(s) you want to subscribe to?");
-		System.out.println("Example of use : variable1;variable2;variable3");
-		String v = scan.nextLine();
-		String [] vTab = v.split(";");
-		for (String variable : vTab) {
-			subscribeVariable.add(variable);
-		}
-		ParameterSubscribe parameterSubscribe = new parameterSubscribe(ipAddress,port,subscribeVariable,managerName);
-		switch(typeOfTrapSub) {
-			case 1:
-				manager.subscribeAgent(parameterSubscribe);
-			break;
-			case 2:
-				manager.subscribeAgent(parameterSubscribe);
-			break;
-		}
-
 		System.out.println("Do you have a community");
 		System.out.println("1 - YES");
 		System.out.println("2 - NO");

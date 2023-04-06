@@ -1,5 +1,3 @@
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -10,9 +8,11 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
 
 /**
@@ -20,55 +20,22 @@ import java.util.List;
  * Class AgentImpl
  *
  */
-public class AgentImpl extends UnicastRemoteObject implements Agent {
+public class AgentImpl extends SNMPEntityImpl implements Agent, Observer {
 	
-	private static final String filepath="../MIB";
 	private MIB mib;
 	private HashMap<String, Droit> communityConfig;
-	private Manager manager;
-	private TrapManagement trapManagement;
 	
 	/**
 	 * 
 	 * @param communityConfig is the hashMap containing <community, Permissions>
-	 * @throws RemoteException
-	 * Create a new MIB object 
-	 * @throws UnknownHostException 
-	 * @throws SocketException 
+	 * @throws Exception 
 	 */
-	public AgentImpl(HashMap<String, Droit> communityConfig) throws RemoteException, SocketException, UnknownHostException {
-		this.trapManagement = new TrapManagement(this);
+	public AgentImpl(String name, String registryAddr, int registryPort, HashMap<String, Droit> communityConfig) throws Exception {
+		//Call SNMPEntity to register registry and name 
+		super(name, registryAddr, registryPort);
 		this.mib = new MIB();
 		this.communityConfig = communityConfig;
 		this.putMibValue();
-		this.WriteObjectToFile(this.mib);
-	}
-	
-	public Message subscribe(ParameterSubscribe parameterSuscribe) {
-		String addrIp = parameterSuscribe.getAddrIp();
-		int port = parameterSuscribe.getNumPort();
-		String managerName = parameterSuscribe.getManagerName();
-		ArrayList<String> monitoredVariables = parameterSuscribe.getMonitoredVariables();
-		
-		String url = "rmi://"+addrIp+":"+port+"/"+managerName;
-		
-		try {
-			this.manager = ((Manager) Naming.lookup(url));
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NotBoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		for (String s : monitoredVariables) {
-			this.trapManagement.setValue(s);
-		}
-		return new Message("SUSCRIBE_OK","");
 	}
 	
 
@@ -82,14 +49,9 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 		 * If no community match so return NO_RESP 
 		 */
 		if (!this.isCommunityExists(parameterGet.getCommunity())) {
-			/**
-			 * Trap notifier => bad community notifier to manager
-			 */
-			this.trapManagement.notifyBadCommunity(parameterGet.getCommunity());
 			return new Message("NO_RESP", "---");
 		}
-		
-		String returnValue = this.mib.getValue(parameterGet.getName());
+		String returnValue = this.mib.getMibRecord(parameterGet.getName()).getValue();
 		String messageType = "GET_RESP";
 		return new Message(messageType, returnValue);
 	}
@@ -106,10 +68,6 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 		 * If no community match so return NO_RESP 
 		 */
 		if (!this.isCommunityExists(parameterGet.getCommunity())) {
-			/**
-			 * Trap notifier => bad community notifier to manager
-			 */
-			this.trapManagement.notifyBadCommunity(parameterGet.getCommunity());
 			return new Message(messageType, returnValue);
 		}
 		
@@ -127,10 +85,9 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 			/**
 			 * get NEXT so index + 1
 			 */
-			String key = this.mib.getKey(index + 1);
-			String value = this.mib.getValue(index + 1);
-			if (key != null && value != null) {
-				returnValue = this.mib.getKey(index + 1) + ".1 = " + this.mib.getValue(index + 1);
+			MibRecord next = this.mib.getMibNextRecord(this.mib.getMibRecord(name));
+			if (next != null) {
+				returnValue = next.getKey() + ".1 = " + next.getValue();
 				messageType = "GETNEXT_RESP";
 			}
 			
@@ -145,7 +102,7 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 			if (index == -1) {
 				return new Message(messageType, returnValue);
 			}
-			returnValue = this.mib.getKey(index) + ".1 = " + this.mib.getValue(index);
+			returnValue = this.mib.getMibRecord(name).getKey() + ".1 = " + this.mib.getMibRecord(name).getValue();
 			messageType = "GETNEXT_RESP";	
 		} 
 		
@@ -162,13 +119,7 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 		 * If no community match so return NO_RESP 
 		 */
 		if (!this.isCommunityExists(parameterSet.getCommunity())) {
-			/**
-			 * Trap notifier => bad community notifier to manager
-			 */
-			this.trapManagement.notifyBadCommunity(parameterSet.getCommunity());
 			return new Message("NO_RESP", "---");
-			
-
 		} 
 		/**
 		 * Community found, checking permissions for set
@@ -176,21 +127,14 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 		else if (this.getCommunityPermissions(parameterSet.getCommunity()) != Droit.RW){
 			return new Message("NO_RESP", "---");
 		} else {
-			if (this.mib.getDroit(parameterSet.getName()) != Droit.RW) {
+			if (this.mib.getMibRecord(parameterSet.getName()).getPermission() != Droit.RW) {
 				return new Message("NO_RESP", "---");
 			}
 			String name = parameterSet.getName();
 			String value = parameterSet.getValue();
-			String oldValue = this.mib.getValue(parameterSet.getName());
 			this.mib.setValueMib(name, value);
 			String messageType = "SET_RESP";
 			String messageValue = "OK";
-			
-			/**
-			 * Trap notifier
-			 */
-			this.trapManagement.change(name, oldValue, value);
-			System.out.println("mib ajout OK");
 			return new Message(messageType, messageValue);
 		}
 		
@@ -306,24 +250,37 @@ public class AgentImpl extends UnicastRemoteObject implements Agent {
 			mib.setValueMib(objectMib[i], MibValue[i]);
 		}
 	}
-	
-	/**
-	 * Writte MIB in file
-	 * @param serObj is the object to serialize (Here is the MIB)
-	 */
-	 public void WriteObjectToFile(Object serObj) {
-	        try {
-	            FileOutputStream fileOut = new FileOutputStream(filepath);
-	            ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
-	            objectOut.writeObject(serObj);
-	            objectOut.close();
-	            System.out.println("The MIB was succesfully written to a file");
-	        } catch (Exception ex) {
-	            ex.printStackTrace();
-	        }
-	    }
 
-	public void sendTrap(String trap) {
-		this.manager.receiveTrap(trap);
+	public void registerMonitoredVariables() {
+		//A faire check si le nom this est présent dans le tableau entity de this
+		try {
+			for (String monitoredValue : this.registeredEntities.get(Naming.lookup("rmi://" + this.registryAddr + ":" + this.registryPort + "/" + this.entityName))) {
+				this.mib.getMibRecord(monitoredValue).addObserver(this);
+				System.out.println("[" + monitoredValue + "] monitored ON");
+			}
+		} catch (MalformedURLException | RemoteException | NotBoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
+	//Callback method TRAP RECEIVER
+	@Override
+	public void update(Observable o, Object arg) {
+		//TRAP
+		for (Map.Entry<SNMPEntity, List<String>> entry : this.registeredEntities.entrySet()) {
+			//Ignoring self entity trap sending
+			try {
+				if (!entry.equals(Naming.lookup("rmi://" + this.registryAddr + ":" + this.registryPort + "/" + this.entityName))) {
+					SNMPEntity sendTo = (SNMPEntity) entry.getKey();
+					sendTo.receiveTrap(((MibRecord) arg).getKey());
+					System.out.println("TRAP send successfuly to entity");
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	}	
+	
+}
 }
