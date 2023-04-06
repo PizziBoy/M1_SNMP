@@ -1,5 +1,6 @@
 
 import java.rmi.Naming;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -10,8 +11,44 @@ public class Launcher_ManagerClient {
 		boolean menuOn = true;
 		
 		String community = "public";
-		Manager manager = new Manager("Manager1", "localhost", 20999);
-		manager.setAgent((Agent) Naming.lookup("rmi://localhost:20999/agent"));
+		System.out.println("What is your manager name?");
+		String managerName = scan.nextLine();
+
+		System.out.println("Do you want to be a manager to manager or agent to manager?");
+		System.out.println("1 - Manager to Manager");
+		System.out.println("2 - Agent to Manager");
+		int typeOfTrapSub = scan.nextInt();
+
+		System.out.println("What is its name?");
+		String entityName = scan.nextLine();
+
+		System.out.println("What is the IP address of the server?");
+		String ipAddress = scan.nextLine();
+
+		System.out.println("What is the port you want to use?");
+		int port = scan.nextInt();
+
+		ArrayList<String> subscribeVariable = new ArrayList<String>();
+		System.out.println("Which variable(s) you want to subscribe to?");
+		System.out.println("Example of use : variable1;variable2;variable3");
+		String v = scan.nextLine();
+		String [] vTab = v.split(";");
+		for (String variable : vTab) {
+			subscribeVariable.add(variable);
+		}
+		Manager manager = new Manager(managerName, ipAddress, port);
+		switch(typeOfTrapSub) {
+			case 1:
+				
+				SNMPEntity managerEntity = (SNMPEntity) Naming.lookup("rmi://" + manager.registryAddr + ":" + manager.registryPort + "/" + entityName);
+				System.out.println(managerEntity.addEntity(manager.entityName, subscribeVariable));
+			break;
+			case 2:
+				manager.setCurrentAgent(entityName);
+				((SNMPEntity) manager.getAgent()).addEntity(manager.entityName, subscribeVariable);
+			break;
+		}
+		
 		
 		System.out.println("Do you have a community");
 		System.out.println("1 - YES");
