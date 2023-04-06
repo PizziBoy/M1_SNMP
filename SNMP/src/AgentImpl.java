@@ -271,10 +271,13 @@ public class AgentImpl extends SNMPEntityImpl implements Agent, Observer {
 		for (Map.Entry<SNMPEntity, List<String>> entry : this.registeredEntities.entrySet()) {
 			//Ignoring self entity trap sending
 			try {
-				if (!entry.equals(Naming.lookup("rmi://" + this.registryAddr + ":" + this.registryPort + "/" + this.entityName))) {
-					SNMPEntity sendTo = (SNMPEntity) entry.getKey();
-					sendTo.receiveTrap(((MibRecord) arg).getKey());
-					System.out.println("TRAP send successfuly to entity");
+				if (!entry.getKey().equals(Naming.lookup("rmi://" + this.registryAddr + ":" + this.registryPort + "/" + this.entityName))) {
+					if (entry.getValue().contains(((MibRecord) arg).getKey())) {
+						SNMPEntity sendTo = (SNMPEntity) entry.getKey();
+						sendTo.receiveTrap(((MibRecord) arg).getKey());
+						System.out.println("TRAP send successfuly to entity");
+					}
+					
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

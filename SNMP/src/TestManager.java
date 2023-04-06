@@ -7,17 +7,17 @@ public class TestManager {
 		Manager manager = new Manager("Manager1", "localhost", 20999);
 		//Set existing agent 
 		manager.setCurrentAgent("Agent1");
+		ArrayList<String> monitoredVariablesManager1 = new ArrayList<String>();
+		monitoredVariablesManager1.add("os");
+		
+		//Set monitored Value ON for first manager (subscribe to Agent)
+		((SNMPEntity) manager.getAgent()).addEntity(manager.entityName, monitoredVariablesManager1);
 		
 		System.out.println("GET OS FROM Manager1 -> " + manager.getFromAgent(new ParameterGet("os", "stri")).getValue());
-		
+
+		Thread.sleep(10000);
 		System.out.println("SET OS FROM Manager1 -> " + manager.setOnAgent(new ParameterSet("os", "WIN7", "stri")).getValue());
 
-		Manager manager2 = new Manager("Manager2", "localhost", 20999);
-		
-		ArrayList<String> monitoredVariablesManager2 = new ArrayList<String>();
-		monitoredVariablesManager2.add("os");
-		
-		System.out.println(manager.addEntity("Manager2", monitoredVariablesManager2).getValue());
 	
 	}
 }
