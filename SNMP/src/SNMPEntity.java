@@ -8,5 +8,6 @@ import java.util.List;
  */
 public interface SNMPEntity extends Remote {
 	Message addEntity(String entityName, List<String> monitoredVariables) throws Exception;
+	Message receiveTrap(String trap) throws Exception;
 
 }

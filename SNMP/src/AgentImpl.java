@@ -1,11 +1,18 @@
 import java.io.Serializable;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
 
 /**
@@ -13,7 +20,7 @@ import java.util.HashMap;
  * Class AgentImpl
  *
  */
-public class AgentImpl extends SNMPEntityImpl implements Agent {
+public class AgentImpl extends SNMPEntityImpl implements Agent, Observer {
 	
 	private MIB mib;
 	private HashMap<String, Droit> communityConfig;
@@ -44,8 +51,7 @@ public class AgentImpl extends SNMPEntityImpl implements Agent {
 		if (!this.isCommunityExists(parameterGet.getCommunity())) {
 			return new Message("NO_RESP", "---");
 		}
-		
-		String returnValue = this.mib.getValue(parameterGet.getName());
+		String returnValue = this.mib.getMibRecord(parameterGet.getName()).getValue();
 		String messageType = "GET_RESP";
 		return new Message(messageType, returnValue);
 	}
@@ -79,10 +85,9 @@ public class AgentImpl extends SNMPEntityImpl implements Agent {
 			/**
 			 * get NEXT so index + 1
 			 */
-			String key = this.mib.getKey(index + 1);
-			String value = this.mib.getValue(index + 1);
-			if (key != null && value != null) {
-				returnValue = this.mib.getKey(index + 1) + ".1 = " + this.mib.getValue(index + 1);
+			MibRecord next = this.mib.getMibNextRecord(this.mib.getMibRecord(name));
+			if (next != null) {
+				returnValue = next.getKey() + ".1 = " + next.getValue();
 				messageType = "GETNEXT_RESP";
 			}
 			
@@ -97,7 +102,7 @@ public class AgentImpl extends SNMPEntityImpl implements Agent {
 			if (index == -1) {
 				return new Message(messageType, returnValue);
 			}
-			returnValue = this.mib.getKey(index) + ".1 = " + this.mib.getValue(index);
+			returnValue = this.mib.getMibRecord(name).getKey() + ".1 = " + this.mib.getMibRecord(name).getValue();
 			messageType = "GETNEXT_RESP";	
 		} 
 		
@@ -122,7 +127,7 @@ public class AgentImpl extends SNMPEntityImpl implements Agent {
 		else if (this.getCommunityPermissions(parameterSet.getCommunity()) != Droit.RW){
 			return new Message("NO_RESP", "---");
 		} else {
-			if (this.mib.getDroit(parameterSet.getName()) != Droit.RW) {
+			if (this.mib.getMibRecord(parameterSet.getName()).getPermission() != Droit.RW) {
 				return new Message("NO_RESP", "---");
 			}
 			String name = parameterSet.getName();
@@ -244,6 +249,38 @@ public class AgentImpl extends SNMPEntityImpl implements Agent {
 	    for (int i = 0; i < objectMib.length; i++) {
 			mib.setValueMib(objectMib[i], MibValue[i]);
 		}
+	}
+
+	public void registerMonitoredVariables() {
+		//A faire check si le nom this est présent dans le tableau entity de this
+		try {
+			for (String monitoredValue : this.registeredEntities.get(Naming.lookup("rmi://" + this.registryAddr + ":" + this.registryPort + "/" + this.entityName))) {
+				this.mib.getMibRecord(monitoredValue).addObserver(this);
+				System.out.println("[" + monitoredValue + "] monitored ON");
+			}
+		} catch (MalformedURLException | RemoteException | NotBoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	//Callback method TRAP RECEIVER
+	@Override
+	public void update(Observable o, Object arg) {
+		//TRAP
+		for (Map.Entry<SNMPEntity, List<String>> entry : this.registeredEntities.entrySet()) {
+			//Ignoring self entity trap sending
+			try {
+				if (!entry.equals(Naming.lookup("rmi://" + this.registryAddr + ":" + this.registryPort + "/" + this.entityName))) {
+					SNMPEntity sendTo = (SNMPEntity) entry.getKey();
+					sendTo.receiveTrap(((MibRecord) arg).getKey());
+					System.out.println("TRAP send successfuly to entity");
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}	
 	
+}
 }

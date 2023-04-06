@@ -4,13 +4,14 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class SNMPEntityImpl extends UnicastRemoteObject implements SNMPEntity {
 	
 	//List of entities (Manager/Agent) with MIB values subscribed
-	private HashMap<SNMPEntity, List<String>> registeredEntities;
+	protected HashMap<SNMPEntity, List<String>> registeredEntities;
 	protected String entityName;
 	
 	protected String registryAddr;
@@ -56,6 +57,17 @@ public class SNMPEntityImpl extends UnicastRemoteObject implements SNMPEntity {
 		} catch (MalformedURLException | RemoteException | NotBoundException e) {
 			throw new Exception("Error while retrieve entity in registry please check and retry");
 		}
+	}
+
+	@Override
+	public Message receiveTrap(String trap) throws Exception {
+		String str = "######################################### TRAP RECEIVER START ##########################################\n";
+		str = str +  "- Trap received from agent ("+this.entityName+")\n";
+		str = str +  "- Message received is :\n";
+		str = str +   trap + " Value CHANGED" + "\n";
+		str = str +  "########################################## TRAP RECEIVER END ###########################################\n";
+		System.out.println(str);
+		return new Message("TRAP", "TRAP"); //TOBEMODIF
 	}
 
 	

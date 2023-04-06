@@ -17,3 +17,6 @@
 /TestAgent.class
 /SNMPEntityImpl.class
 /TestManager.class
+/MibRecord.class
+/Subject.class
+/Observer.class

@@ -10,7 +10,8 @@ public class TestManager {
 		
 		System.out.println("GET OS FROM Manager1 -> " + manager.getFromAgent(new ParameterGet("os", "stri")).getValue());
 		
-		
+		System.out.println("SET OS FROM Manager1 -> " + manager.setOnAgent(new ParameterSet("os", "WIN7", "stri")).getValue());
+
 		Manager manager2 = new Manager("Manager2", "localhost", 20999);
 		
 		ArrayList<String> monitoredVariablesManager2 = new ArrayList<String>();
