@@ -7,6 +7,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SNMPEntityImpl extends UnicastRemoteObject implements SNMPEntity {
 	
@@ -67,6 +68,24 @@ public class SNMPEntityImpl extends UnicastRemoteObject implements SNMPEntity {
 		str = str +   trap + " Value CHANGED" + "\n";
 		str = str +  "########################################## TRAP RECEIVER END ###########################################\n";
 		System.out.println(str);
+		
+		
+		//FORWARDING TRAP
+		for (Map.Entry<SNMPEntity, List<String>> entry : this.registeredEntities.entrySet()) {
+			//Ignoring self entity trap sending
+			try {
+				if (!entry.getKey().equals(Naming.lookup("rmi://" + this.registryAddr + ":" + this.registryPort + "/" + this.entityName))) {
+					if (entry.getValue().contains(trap)) {
+						SNMPEntity sendTo = (SNMPEntity) entry.getKey();
+						sendTo.receiveTrap(trap);
+						System.out.println("TRAP send successfuly to entity");
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	}	
 		return new Message("TRAP", "TRAP"); //TOBEMODIF
 	}
 

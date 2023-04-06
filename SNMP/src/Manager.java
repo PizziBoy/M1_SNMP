@@ -35,6 +35,8 @@ public class Manager extends SNMPEntityImpl{
 			throw new Exception("Error while lookup Agent entity please check Registry or name of entity");
 		}
 	}
+	
+
 	/**
 	 * Get variable value by requesting managed agent with parameter @param pGet
 	 * @throws RemoteException
@@ -57,6 +59,10 @@ public class Manager extends SNMPEntityImpl{
 	 */
 	public Message setOnAgent(ParameterSet pSet) throws RemoteException {
 		return this.agent.set(pSet);
+	}
+	
+	public Agent getAgent() {
+		return agent;
 	}
 	
 	
