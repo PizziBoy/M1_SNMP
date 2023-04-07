@@ -26,6 +26,9 @@ public class AgentImpl extends SNMPEntityImpl implements Agent, Observer {
 	private MIB mib;
 	private HashMap<String, Droit> communityConfig;
 	
+	//Only 1 referent manager on Agent (in order to send Traps handle by bad community requests)
+	private SNMPEntity manager;
+	
 	/**
 	 * 
 	 * @param communityConfig is the hashMap containing <community, Permissions>
@@ -39,6 +42,17 @@ public class AgentImpl extends SNMPEntityImpl implements Agent, Observer {
 		this.putMibValue();
 	}
 	
+	//Agent must be present in registry before setting it !
+	public void setReferentManager(String managerName) throws Exception {
+		try {
+			SNMPEntity tmp = (SNMPEntity) Naming.lookup("rmi://" + this.registryAddr + ":" + this.registryPort + "/" + managerName);
+			this.manager = tmp;
+			System.out.println("" + managerName + " successfuly designed referent on  " + this.entityName);
+		} catch (MalformedURLException | RemoteException | NotBoundException e) {
+			throw new Exception("Error while lookup Agent entity please check Registry or name of entity");
+		}
+	}
+
 
 	/**
 	 * get from the MIB with parameterGet
@@ -50,6 +64,8 @@ public class AgentImpl extends SNMPEntityImpl implements Agent, Observer {
 		 * If no community match so return NO_RESP 
 		 */
 		if (!this.isCommunityExists(parameterGet.getCommunity())) {
+			//Sending trap to referent manager (notify)
+			this.sendTrapBadCommunity(this.manager, parameterGet.getCommunity());
 			return new Message("NO_RESP", "---");
 		}
 		String returnValue = this.mib.getMibRecord(parameterGet.getName()).getValue();
@@ -69,6 +85,8 @@ public class AgentImpl extends SNMPEntityImpl implements Agent, Observer {
 		 * If no community match so return NO_RESP 
 		 */
 		if (!this.isCommunityExists(parameterGet.getCommunity())) {
+			//Sending trap to referent manager (notify)
+			this.sendTrapBadCommunity(this.manager, parameterGet.getCommunity());
 			return new Message(messageType, returnValue);
 		}
 		
@@ -120,6 +138,8 @@ public class AgentImpl extends SNMPEntityImpl implements Agent, Observer {
 		 * If no community match so return NO_RESP 
 		 */
 		if (!this.isCommunityExists(parameterSet.getCommunity())) {
+			//Sending trap to referent manager (notify)
+			this.sendTrapBadCommunity(this.manager, parameterSet.getCommunity());
 			return new Message("NO_RESP", "---");
 		} 
 		/**
@@ -261,6 +281,31 @@ public class AgentImpl extends SNMPEntityImpl implements Agent, Observer {
 		}
 	}
 
+	
+	public void sendTrapChange(SNMPEntity entity, String trap) {
+		try {
+			entity.receiveTrapChange(trap);
+			System.out.println("TRAP-CHANGE send successfuly to entity");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void sendTrapBadCommunity(SNMPEntity entity, String trap) {
+		//If referent Manager exists so send trap
+		if (this.manager != null) {
+			try {
+				entity.receiveTrapBadCommunity(trap);
+				System.out.println("TRAP-BADCOMMUNITY send successfuly to entity");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	
 	//Callback method TRAP RECEIVER
 	@Override
 	public void update(Observable o, Object arg) {
@@ -271,8 +316,7 @@ public class AgentImpl extends SNMPEntityImpl implements Agent, Observer {
 				if (!entry.getKey().equals(Naming.lookup("rmi://" + this.registryAddr + ":" + this.registryPort + "/" + this.entityName))) {
 					if (entry.getValue().contains(((MibRecord) arg).getKey())) {
 						SNMPEntity sendTo = (SNMPEntity) entry.getKey();
-						sendTo.receiveTrap(((MibRecord) arg).getKey());
-						System.out.println("TRAP send successfuly to entity");
+						this.sendTrapChange(sendTo, ((MibRecord) arg).getKey());
 					}
 					
 				}

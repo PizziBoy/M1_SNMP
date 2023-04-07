@@ -16,7 +16,7 @@ public class TestManager {
 		System.out.println("GET OS FROM Manager1 -> " + manager.getFromAgent(new ParameterGet("os", "stri")).getValue());
 
 		Thread.sleep(10000);
-		System.out.println("SET OS FROM Manager1 -> " + manager.setOnAgent(new ParameterSet("os", "WIN7", "stri")).getValue());
+		System.out.println("SET OS FROM Manager1 -> " + manager.setOnAgent(new ParameterSet("os", "WIN7", "striz")).getValue());
 
 	
 	}

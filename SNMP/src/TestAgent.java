@@ -25,6 +25,10 @@ public class TestAgent {
 		
 		System.out.println("Agent running ...");
 		
+		System.out.println("Waiting for Manager1 creation so +> referent Manager of agent1");
+		Thread.sleep(10000);
+		agent.setReferentManager("Manager1");
+		
 	}
 
 }
