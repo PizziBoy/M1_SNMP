@@ -8,6 +8,7 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -250,20 +251,16 @@ public class AgentImpl extends SNMPEntityImpl implements Agent, Observer {
 			mib.setValueMib(objectMib[i], MibValue[i]);
 		}
 	}
-
-	public void registerMonitoredVariables() {
-		//A faire check si le nom this est présent dans le tableau entity de this
-		try {
-			for (String monitoredValue : this.registeredEntities.get(Naming.lookup("rmi://" + this.registryAddr + ":" + this.registryPort + "/" + this.entityName))) {
-				this.mib.getMibRecord(monitoredValue).addObserver(this);
-				System.out.println("[" + monitoredValue + "] monitored ON");
-			}
-		} catch (MalformedURLException | RemoteException | NotBoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	
+	public void activateTraps() {
+		//Activate observers for ALL RECORDS of the MIB then filter by sending Trap on managers
+		ArrayList<MibRecord> mib = this.mib.getMib();
+		for (int i = 0; i < mib.size(); i++) {
+			mib.get(i).addObserver(this);
+			System.out.println("[" + mib.get(i).getKey() + "] monitored ON");
 		}
-		
 	}
+
 	//Callback method TRAP RECEIVER
 	@Override
 	public void update(Observable o, Object arg) {

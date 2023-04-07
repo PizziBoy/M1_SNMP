@@ -37,6 +37,10 @@ public class MIB {
 		System.out.println("Mib structure OK");
 	}
 	
+	public ArrayList<MibRecord> getMib() {
+		return mib;
+	}
+
 	/**
 	 * Method which set the MIB value in trioIndexValeurDroit with the key
 	 * @param key is the MIB object name

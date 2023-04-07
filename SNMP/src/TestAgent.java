@@ -20,13 +20,8 @@ public class TestAgent {
 		//Agent instanciation (published automatically to registry)
 		AgentImpl agent = new AgentImpl("Agent1", "localhost", 20999, configCommunity);
 		
-		//Monitored value ON on Agent
-		ArrayList<String> monitoredVariablesAgent1 = new ArrayList<String>();
-		//Valeurs à observer 
-		monitoredVariablesAgent1.add("os");
-		monitoredVariablesAgent1.add("addrIp");
-		System.out.println(agent.addEntity("Agent1", monitoredVariablesAgent1).getValue());
-		agent.registerMonitoredVariables();
+		//TRAPS ON on Agent
+		agent.activateTraps();
 		
 		System.out.println("Agent running ...");
 		
