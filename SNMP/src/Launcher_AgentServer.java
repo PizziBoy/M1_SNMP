@@ -11,7 +11,7 @@ public class Launcher_AgentServer {
 	private final static Integer PORT = 20999;
 
 	public static void main(String[] args) throws MalformedURLException, RemoteException, AlreadyBoundException, SocketException, UnknownHostException {
-		
+		/***
 		//Community config file 
 		HashMap<String, Droit> configCommunity = new HashMap<String, Droit>();
 		configCommunity.put("public", Droit.RO);
@@ -26,7 +26,15 @@ public class Launcher_AgentServer {
 		//Publish registry
 		Naming.bind("rmi://localhost:" + PORT.toString() +"/agent", agent);
 		
-		System.out.println("Agent running ...");
+		System.out.println("Agent running ...");***/
+		
+		try {
+			TestAgent agent1 = new TestAgent();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
 	}
 
 }

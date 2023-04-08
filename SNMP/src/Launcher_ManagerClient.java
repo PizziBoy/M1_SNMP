@@ -9,36 +9,19 @@ public class Launcher_ManagerClient {
 	public static void main(String [] args) throws Exception {
 		Scanner scan = new Scanner(System.in);
 		boolean menuOn = true;
-		
 		String community = "public";
-		System.out.println("What is your manager name?");
-		String managerName = scan.nextLine();
-
-		System.out.println("Do you want to be a manager to manager or agent to manager?");
-		System.out.println("1 - Manager to Manager");
-		System.out.println("2 - Agent to Manager");
-		int typeOfTrapSub = scan.nextInt();
-		scan.nextLine();
 		
-		System.out.println("What is its name?");
-		String entityName = scan.nextLine();
-
-		System.out.println("What is the IP address of the server?");
-		String ipAddress = scan.nextLine();
-
-		System.out.println("What is the port you want to use?");
-		int port = scan.nextInt();
-		scan.nextLine();
-
-		ArrayList<String> subscribeVariable = new ArrayList<String>();
-		System.out.println("Which variable(s) you want to subscribe to?");
-		System.out.println("Example of use : variable1;variable2;variable3");
-		String v = scan.nextLine();
-		String [] vTab = v.split(";");
-		for (String variable : vTab) {
-			subscribeVariable.add(variable);
-		}
+		MenuManager menuM = new MenuManager();
+		
+		String managerName = menuM.requestManagerName();
+		int typeOfTrapSub = menuM.requestTypeOfTrapSub();
+		String entityName = menuM.requestEntityName();
+		String ipAddress = menuM.requestIpAddress();
+		int port = menuM.requestPort();
+		ArrayList<String> subscribeVariable = menuM.requestSubscribeVariable();
+	
 		Manager manager = new Manager(managerName, ipAddress, port);
+		
 		switch(typeOfTrapSub) {
 			case 1:
 				SNMPEntity managerEntity = (SNMPEntity) Naming.lookup("rmi://" + manager.registryAddr + ":" + manager.registryPort + "/" + entityName);
