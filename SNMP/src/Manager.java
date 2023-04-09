@@ -3,6 +3,7 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.HashMap;
+import java.util.Scanner;
 
 /**
  * 
@@ -65,5 +66,7 @@ public class Manager extends SNMPEntityImpl{
 		return agent;
 	}
 	
+	
+
 	
 }
