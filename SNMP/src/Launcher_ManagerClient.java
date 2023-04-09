@@ -11,43 +11,49 @@ public class Launcher_ManagerClient {
 		boolean menuOn = true;
 		String community = "public";
 		
+		//Set class MenuManager
 		MenuManager menuM = new MenuManager();
 		
+		//request managerName
 		String managerName = menuM.requestManagerName();
+		
+		//request type of strap sub
 		int typeOfTrapSub = menuM.requestTypeOfTrapSub();
+		
+		//request entity name
 		String entityName = menuM.requestEntityName();
+		
+		//request registry ip address 
 		String ipAddress = menuM.requestIpAddress();
+		
+		//request registry port
 		int port = menuM.requestPort();
+		
+		//request suscribed varaible
 		ArrayList<String> subscribeVariable = menuM.requestSubscribeVariable();
 	
 		Manager manager = new Manager(managerName, ipAddress, port);
 		
+		//set class starterManager
+		StarterManager starterManager = new StarterManager();
+		
 		switch(typeOfTrapSub) {
 			case 1:
-				SNMPEntity managerEntity = (SNMPEntity) Naming.lookup("rmi://" + manager.registryAddr + ":" + manager.registryPort + "/" + entityName);
-				System.out.println(managerEntity.addEntity(manager.entityName, subscribeVariable));
-				System.out.println("Manager is listening to traps from "+entityName);
+				
+				//start Manager to Manager type
+				starterManager.startManagerToManager(manager, entityName, subscribeVariable);
 			break;
 			case 2:
-				manager.setCurrentAgent(entityName);
-				((SNMPEntity) manager.getAgent()).addEntity(manager.entityName, subscribeVariable);
 				
-				System.out.println("Do you have a community");
-				System.out.println("1 - YES");
-				System.out.println("2 - NO");
-				int valMenu = scan.nextInt();
-				switch(valMenu) {
-				case 1:
-					System.out.println("Enter your community : ");
-					community = scan.next();
-					break;
-				case 2:
-					System.out.println("Your default community is public");
-					break;
-				}
+				//start Agent to Manager type
+				starterManager.startAgentToManager(manager, entityName, subscribeVariable);
+				
+				//request community
+				community = menuM.requestCommunity(community);
+				
 				while(menuOn) {
+					int valMenu;
 					//Affichage du menu
-					
 					
 					System.out.println("["+community+"] "+"1 - GET");
 					System.out.println("["+community+"] "+"2 - SET");

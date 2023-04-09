@@ -69,4 +69,22 @@ public class MenuManager {
 		}
 		return this.subscribeVariable;
 	}
+	
+	public String requestCommunity(String community) {
+		System.out.println("Do you have a community");
+		System.out.println("1 - YES");
+		System.out.println("2 - NO");
+		int valMenu = scan.nextInt();
+		switch(valMenu) {
+		case 1:
+			System.out.println("Enter your community : ");
+			community = scan.next();
+			break;
+		case 2:
+			System.out.println("Your default community is public");
+			break;
+		}
+		return community;
+		
+	}
 }
