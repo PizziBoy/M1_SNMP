@@ -65,42 +65,8 @@ public class Launcher_ManagerClient {
 					ParameterSet paramS = new ParameterSet(null,community,null);
 					paramG.setCommunity(community);
 					paramS.setCommunity(community);
-					try {
-						valMenu = scan.nextInt();
-						scan.nextLine();
-						switch(valMenu) {
-						case 0:
-							menuOn = false;
-							System.out.println("["+community+"] "+"You choose to leave!");
-							break;
-						case 1: 
-							System.out.println("["+community+"] "+"You choose GET!\n");
-							System.out.println("["+community+"] "+"Please enter the key : \n");
-							paramG.setName(scan.next());
-							System.out.println(manager.getFromAgent(paramG).getValue());
-							break;
-						case 2:
-							System.out.println("["+community+"] "+"You choose SET!\n");
-							System.out.println("["+community+"] "+"Please enter the key : \n");
-							paramS.setName(scan.next());
-							scan.nextLine();
-							
-							System.out.println("["+community+"] "+"Please enter the new value : \n");
-							paramS.setValue(scan.next());
-							System.out.println(manager.setOnAgent(paramS).getValue());
-							break;
-						case 3: 
-							System.out.println("["+community+"] "+"You choose GET-NEXT!\n");
-							System.out.println("["+community+"] "+"Please enter the key : \n");
-							paramG.setName(scan.next());
-							System.out.println(manager.getNextFromAgent(paramG).getValue());
-							break;
-						}
-						
-					} catch (InputMismatchException excep) {
-						System.err.println("ERROR : Please enter a number between 0 and 3");
-					}
 					
+					menuOn = menuM.requestCommande(community, manager, menuOn, paramG, paramS);
 				}
 				
 			scan.close();

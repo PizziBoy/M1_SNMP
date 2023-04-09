@@ -21,7 +21,7 @@ public class Launcher_AgentServer {
 		AgentImpl agent = new AgentImpl(configCommunity);
 		
 		//Create the registry
-		LocateRegistry.createRegistry(PORT);
+		LocateRegistry.createRegistry(PORT);)
 		
 		//Publish registry
 		Naming.bind("rmi://localhost:" + PORT.toString() +"/agent", agent);

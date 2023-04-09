@@ -8,6 +8,7 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -274,6 +275,7 @@ public class AgentImpl extends SNMPEntityImpl implements Agent, Observer {
 				if (!entry.getKey().equals(Naming.lookup("rmi://" + this.registryAddr + ":" + this.registryPort + "/" + this.entityName))) {
 					if (entry.getValue().contains(((MibRecord) arg).getKey())) {
 						SNMPEntity sendTo = (SNMPEntity) entry.getKey();
+						String messageSend = ((MibRecord) arg).getKey() + " value has been changed ("+ java.time.LocalDate.now() + " " + java.time.LocalTime.now() + ")";
 						sendTo.receiveTrap(((MibRecord) arg).getKey());
 						System.out.println("TRAP send successfuly to entity");
 					}
