@@ -3,15 +3,9 @@
 Client/server application to manage the equipment and services of an IP network. This project is based on the already existing model of the SNMP protocol.
 
 
+## Version : 4.0
 
-
-
-
-
-
-## Version : 2.0
-
-This release introduces the following concepts : MIB, get_next operation and community.
+This release introduces the following concepts : Manager hierarchy, change in code structure, Observer MIB value
 
 
 ### Start app
