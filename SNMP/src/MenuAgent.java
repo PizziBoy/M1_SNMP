@@ -31,21 +31,24 @@ public class MenuAgent {
         boolean menuCommunityOn = true;
         HashMap<String, Droit> configCommunity = new HashMap<String, Droit>();
         configCommunity.put("public", Droit.RO);
-        System.out.println("Do you want to configure any comunity?");
-        System.out.println("1 - YES");
-		System.out.println("2 - NO (there is/are "+configCommunity.keySet().size()+" community/ties configured)");
-        int confComm = scan.nextInt();
-		scan.nextLine();
+        
         while (menuCommunityOn) {
+        	System.out.println("Do you want to configure any comunity?");
+            System.out.println("1 - YES");
+    		System.out.println("2 - NO (there is/are "+configCommunity.keySet().size()+" community/ties configured)");
+            int confComm = scan.nextInt();
+    		scan.nextLine();
             if (confComm == 1) {
                 System.out.println("What is the name of the community you want to configure?");
                 String communityName = scan.nextLine();
                 System.out.println("What are the rights for this community (RW | RO)?");
                 String communityRights = scan.nextLine();
-                if (communityRights == "RW") {
+                System.out.println(communityRights);
+                
+                if (communityRights.equals("RW")) {
                     configCommunity.put(communityName, Droit.RW);
                     System.out.println("The community "+communityName+" has been added with "+communityRights+" !");
-                } else if (communityRights == "RO") {
+                } else if (communityRights.equals("RO")) {
                     configCommunity.put(communityName, Droit.RO);
                     System.out.println("The community "+communityName+" has been added with "+communityRights+" !");
                 } else {
@@ -59,8 +62,6 @@ public class MenuAgent {
         }
         return configCommunity;
     }
-	
-	
 	
 	public String requestRegistryAddress() {
 		System.out.println("What is the registry address (press Enter for default address = localhost) ?");

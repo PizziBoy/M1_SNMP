@@ -16,13 +16,13 @@ public class TestAgent {
 		int port = menuAgent.requestRegistryPort();
 		String registryAddress = menuAgent.requestRegistryAddress();
 
-		
+		System.out.println(port);
 
 		//Create the registry
-		LocateRegistry.createRegistry(port);
+		LocateRegistry.createRegistry(20999);
 
 		//Agent instanciation (published automatically to registry)
-		AgentImpl agent = new AgentImpl(agentName, registryAddress, port, configCommunity);
+		AgentImpl agent = new AgentImpl("a1", "localhost", 20999, configCommunity);
 
 		//Monitored value ON on Agent
 		ArrayList<String> monitoredVariablesAgent1 = new ArrayList<String>();
