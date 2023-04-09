@@ -63,7 +63,7 @@ public class SNMPEntityImpl extends UnicastRemoteObject implements SNMPEntity {
 	@Override
 	public Message receiveTrapChange(String trap) throws Exception {
 		String str = "######################################### TRAP RECEIVER START ##########################################\n";
-		str = str +  "- Trap received from agent ("+this.entityName+")\n";
+		str = str +  "- Trap received \n";
 		str = str +  "- Message received is :\n";
 		str = str +   trap + " Value CHANGED" + "\n";
 		str = str +  "########################################## TRAP RECEIVER END ###########################################\n";
@@ -86,18 +86,18 @@ public class SNMPEntityImpl extends UnicastRemoteObject implements SNMPEntity {
 				e.printStackTrace();
 			}
 	}	
-		return new Message("TRAP", "TRAP"); //TOBEMODIF
+		return new Message("TRAP", "TRAP"); 
 	}
 
 	@Override
 	public Message receiveTrapBadCommunity(String trap) throws Exception {
 		String str = "######################################### TRAP RECEIVER START ##########################################\n";
-		str = str +  "- Trap received from agent \n";
+		str = str +  "- Trap received\n";
 		str = str +  "- Message received is :\n";
-		str = str +  " BAD COMMUNITY ==> " + trap + "\n";
+		str = str + trap + "\n";
 		str = str +  "########################################## TRAP RECEIVER END ###########################################\n";
 		System.out.println(str);
-		return new Message("TRAP", "TRAP"); //TOBEMODIF
+		return new Message("TRAP", "TRAP"); 
 	}
 
 	

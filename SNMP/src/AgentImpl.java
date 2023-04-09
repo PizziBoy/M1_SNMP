@@ -284,7 +284,8 @@ public class AgentImpl extends SNMPEntityImpl implements Agent, Observer {
 	
 	public void sendTrapChange(SNMPEntity entity, String trap) {
 		try {
-			entity.receiveTrapChange(trap);
+			String messageSend = trap + " value has been changed ("+ java.time.LocalDate.now() + " " + java.time.LocalTime.now() + ")";
+			entity.receiveTrapChange(messageSend);
 			System.out.println("TRAP-CHANGE send successfuly to entity");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -296,7 +297,8 @@ public class AgentImpl extends SNMPEntityImpl implements Agent, Observer {
 		//If referent Manager exists so send trap
 		if (this.manager != null) {
 			try {
-				entity.receiveTrapBadCommunity(trap);
+				String messageSend = trap + " => bad community ! ("+ java.time.LocalDate.now() + " " + java.time.LocalTime.now() + ")";
+				entity.receiveTrapBadCommunity(messageSend);
 				System.out.println("TRAP-BADCOMMUNITY send successfuly to entity");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

@@ -11,7 +11,7 @@ public class StarterManager {
 	
 	public void startManagerToManager(Manager manager, String entityName, ArrayList<String> subscribeVariable) throws Exception {
 		SNMPEntity managerEntity = (SNMPEntity) Naming.lookup("rmi://" + manager.registryAddr + ":" + manager.registryPort + "/" + entityName);
-		System.out.println(managerEntity.addEntity(manager.entityName, subscribeVariable));
+		System.out.println(managerEntity.addEntity(manager.entityName, subscribeVariable).getValue());
 		System.out.println("Manager is listening to traps from "+ entityName);
 	}
 	
