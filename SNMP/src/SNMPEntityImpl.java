@@ -69,7 +69,6 @@ public class SNMPEntityImpl extends UnicastRemoteObject implements SNMPEntity {
 		str = str +  "########################################## TRAP RECEIVER END ###########################################\n";
 		System.out.println(str);
 		
-		
 		//FORWARDING TRAP
 		for (Map.Entry<SNMPEntity, List<String>> entry : this.registeredEntities.entrySet()) {
 			//Ignoring self entity trap sending
